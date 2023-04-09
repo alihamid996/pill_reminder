@@ -1,0 +1,192 @@
+@startuml
+
+set namespaceSeparator ::
+
+class "smartpharm::alarm_helper.dart::AlarmHelper" {
+  {static} -Database? _database
+  {static} -AlarmHelper? _alarmHelper
+  +Future<Database> database
+  +Future<Database> initializeDatabase()
+  +void insertAlarm()
+  +Future<List<AlarmInfo>> getAlarms()
+  +Future<int> delete()
+}
+
+"smartpharm::alarm_helper.dart::AlarmHelper" o-- "sqflite_common::sqlite_api.dart::Database"
+"smartpharm::alarm_helper.dart::AlarmHelper" o-- "smartpharm::alarm_helper.dart::AlarmHelper"
+
+class "smartpharm::alarm_info.dart::AlarmInfo" {
+  +dynamic id
+  +String? title
+  +String? cabin
+  +String? cabinnumber
+  +DateTime? alarmDateTime
+  +bool? isPending
+  +dynamic gradientColorIndex
+  +dynamic taken
+  +Map<String, dynamic> toMap()
+}
+
+class "smartpharm::constrants::theme_data.dart::CustomColors" {
+  {static} +Color primaryTextColor
+  {static} +Color dividerColor
+  {static} +Color pageBackgroundColor
+  {static} +Color menuBackgroundColor
+  {static} +Color clockBG
+  {static} +Color clockOutline
+  {static} +Color? secHandColor
+  {static} +Color minHandStatColor
+  {static} +Color minHandEndColor
+  {static} +Color hourHandStatColor
+  {static} +Color hourHandEndColor
+}
+
+"smartpharm::constrants::theme_data.dart::CustomColors" o-- "dart::ui::Color"
+
+class "smartpharm::constrants::theme_data.dart::GradientColors" {
+  +List<Color> colors
+  {static} +List<Color> sky
+  {static} +List<Color> sunset
+  {static} +List<Color> sea
+  {static} +List<Color> mango
+  {static} +List<Color> fire
+}
+
+class "smartpharm::constrants::theme_data.dart::GradientTemplate" {
+  {static} +List<GradientColors> gradientTemplate
+}
+
+class "smartpharm::enums.dart::MenuType" {
+  +int index
+  {static} +List<MenuType> values
+  {static} +MenuType clock
+  {static} +MenuType AddAlarm
+  {static} +MenuType PreviousPills
+}
+
+"smartpharm::enums.dart::MenuType" o-- "smartpharm::enums.dart::MenuType"
+"dart::core::Enum" <|-- "smartpharm::enums.dart::MenuType"
+
+class "smartpharm::main.dart::MyApp" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "smartpharm::main.dart::MyApp"
+
+class "smartpharm::menu_info.dart::MenuInfo" {
+  +MenuType menuType
+  +String? title
+  +String? imageSource
+  +dynamic updateMenu()
+}
+
+"smartpharm::menu_info.dart::MenuInfo" o-- "smartpharm::enums.dart::MenuType"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "smartpharm::menu_info.dart::MenuInfo"
+
+class "smartpharm::views::alarm_page.dart::AlarmPage" {
+  +_AlarmPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "smartpharm::views::alarm_page.dart::AlarmPage"
+
+class "smartpharm::views::alarm_page.dart::_AlarmPageState" {
+  -DateTime? _alarmTime
+  +String userInput
+  -String _alarmTimeString
+  +DateTime? selectedTime
+  -bool _isRepeatSelected
+  -AlarmHelper _alarmHelper
+  -Future<List<AlarmInfo>>? _alarms
+  -List<AlarmInfo>? _currentAlarms
+  -TextEditingController _textEditingController
+  -TextEditingController _textEditingController2
+  -String? _selectedDayOfWeek
+  +RawResourceAndroidNotificationSound sound
+  -List<String> _cabinnumbers
+  +void dispose()
+  +void initState()
+  +void loadAlarms()
+  +Widget build()
+  +void scheduleAlarm()
+  +void onSaveAlarm()
+  +void deleteAlarm()
+  +Future<List<String>> readdata2()
+}
+
+"smartpharm::views::alarm_page.dart::_AlarmPageState" o-- "smartpharm::alarm_helper.dart::AlarmHelper"
+"smartpharm::views::alarm_page.dart::_AlarmPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"smartpharm::views::alarm_page.dart::_AlarmPageState" o-- "flutter_local_notifications::src::platform_specifics::android::notification_sound.dart::RawResourceAndroidNotificationSound"
+"flutter::src::widgets::framework.dart::State" <|-- "smartpharm::views::alarm_page.dart::_AlarmPageState"
+
+class "smartpharm::views::clock_view.dart::ClockView" {
+  +_ClockViewState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "smartpharm::views::clock_view.dart::ClockView"
+
+class "smartpharm::views::clock_view.dart::_ClockViewState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "smartpharm::views::clock_view.dart::_ClockViewState"
+
+class "smartpharm::views::clock_view.dart::ClockPainter" {
+  +DateTime dateTime
+  +void paint()
+  +bool shouldRepaint()
+}
+
+"flutter::src::rendering::custom_paint.dart::CustomPainter" <|-- "smartpharm::views::clock_view.dart::ClockPainter"
+
+class "smartpharm::views::previous_alarms.dart::TablePage" {
+  +_TablePageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "smartpharm::views::previous_alarms.dart::TablePage"
+
+class "smartpharm::views::previous_alarms.dart::_TablePageState" {
+  -Database _database3
+  -List<Map<String, dynamic>> _data
+  +void initState()
+  -Future<void> _initDatabase()
+  -Future<void> _addData()
+  -Future<void> _deleteData()
+  -Future<void> _refreshData()
+  +Widget build()
+}
+
+"smartpharm::views::previous_alarms.dart::_TablePageState" o-- "sqflite_common::sqlite_api.dart::Database"
+"flutter::src::widgets::framework.dart::State" <|-- "smartpharm::views::previous_alarms.dart::_TablePageState"
+
+class "smartpharm::views::WebSocketDHT.dart::WebSocketDHT" {
+  +State<StatefulWidget> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "smartpharm::views::WebSocketDHT.dart::WebSocketDHT"
+
+class "smartpharm::views::WebSocketDHT.dart::_WebSocketDHT" {
+  -Database _database
+  -Database _database2
+  +String cabinmemory
+  -List<Map<String, dynamic>> _data
+  +List<dynamic> result
+  +IOWebSocketChannel channel
+  +bool connected
+  +void initState()
+  +Future<List<String>> readdata()
+  -Future<void> _refreshData()
+  -Future<void> _addData()
+  +dynamic channelconnect()
+  +Future<void> sendcmd()
+  +Widget build()
+  +Widget buildTextButton()
+}
+
+"smartpharm::views::WebSocketDHT.dart::_WebSocketDHT" o-- "sqflite_common::sqlite_api.dart::Database"
+"smartpharm::views::WebSocketDHT.dart::_WebSocketDHT" o-- "web_socket_channel::io.dart::IOWebSocketChannel"
+"flutter::src::widgets::framework.dart::State" <|-- "smartpharm::views::WebSocketDHT.dart::_WebSocketDHT"
+
+
+@enduml
+
